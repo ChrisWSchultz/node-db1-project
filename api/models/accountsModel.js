@@ -5,9 +5,10 @@ const accountsTable = "accounts"
 function get(id) {
     if(id) {
         return db.table(accountsTable)
-            .where(id, "=", "id")
+            .where("id", "=", id)
+            .first()
     } else {
-        return db.table("accounts")
+        return db.table(accountsTable)
     }
 }
 
@@ -19,14 +20,14 @@ function insert(data) {
 
 function edit(id, data) {
     return db.table(accountsTable)
-        .where(id, "=", "id")
+        .where("id", "=", id)
         .update(data)
-        .then((changed) => (changed > 0 ? get(id) : null))
+        .then(changed => (changed > 0 ? get(id) : null))
 }
 
 function remove(id) {
     return db.table(accountsTable)
-        .where(id, "=", id)
+        .where("id", "=", id)
         .delete
 }
 

@@ -2,7 +2,6 @@ const Account = require('../models/accountsModel')
 
 function validateData() {
     return (request, response, next) => {
-        let message = ''
         let data = request.body
         let account = {
             name: data.name,
@@ -10,17 +9,15 @@ function validateData() {
         }
 
         if(!account.name) {
-            message = {"message": "name is required"}
+            response.status(400).json({"message": "name is required"})
         }
         else if(!account.budget) {
-            message = {"message": "budget is required"}
+            response.status(400).json({"message": "budget is required"})
         }
         else {
             request.accountData = data
             next()
         }
-
-        return response.status(400).json(message)
     }
 }
 
@@ -30,15 +27,15 @@ function validateID() {
         try {
             let account = await Account.get(id)
 
-            if (!account) {
-                return response.status(404).json({"message": "user not found"})
-            } else {
+            if (account) {
                 request.account = account
                 next()
+            } else {
+                response.status(404).json({"message": "user not found"})
             }
         }
         catch (error) {
-            return response.status(500).json({"message": "something went wrong"})
+            response.status(500).json({"message": "something went wrong"})
         }
     }
 }
